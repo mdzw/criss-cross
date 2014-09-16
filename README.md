@@ -60,14 +60,16 @@ function determineBid(gamestate, mygold, opgold) {
     opResult = determineBid(opFutureState, mygold, opgold – bidValue);
     if(myResult === WIN && opResult === WIN)
     	// if we bid bidValue, no matter if we win the bid or lose the bid, we’ll WIN the game
+    	return WIN;
     else if(myResult === LOSE && opResult === LOSE)
     	// if we bid bidValue, no matter if we win the bid or lose the bid, we’ll LOSE the game
-    Else if(myResult === WIN && opResult === LOSE)
+    	return LOSE;
+    else if(myResult === WIN && opResult === LOSE)
     	// op can win if they outbid me; bid higher:
-    lowerBound = bidValue; bidValue = avg(bidValue, upperBound)
+      lowerBound = bidValue; bidValue = avg(bidValue, upperBound);
     else if(myResult === LOSE && opResult === WIN)
     	// op can win if they let me bid this high; bid lower: 
-    upperBound = bidValue; bidValue = avg(bidValue, lowerBound)
+      upperBound = bidValue; bidValue = avg(bidValue, lowerBound);
   }
 }
 ```
