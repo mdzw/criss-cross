@@ -30,7 +30,7 @@ QnD values tiles that:
 * Are close to being in line (horizontally for humans) with my tiles
 * Partially block an opponent path
 
-[ example image ]  
+![Imgur](http://i.imgur.com/YDUMHFD.png)  
 With these attributes combined, QnD quickly/cheaply picks tiles very similar to those chosen by the more expensive Path-Based solution, especially in early turns. However, because QND does not actually search for paths, it’s possible that the opponent could have blocked me. This is mostly mitigated because I only run it very early in the game, before most blocks could develop. If a block does occur then it will hopefully be overcome in later turns when I _am_ calculating paths.
 
 Bid Calculation
