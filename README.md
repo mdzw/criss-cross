@@ -57,7 +57,7 @@ Appendix A: Binary Search Bid Calculation
 There is a very elegant and mathematical way to determine the best bid in some situations. The best way I can summarize it is:
 > "Find a __bid value__ such that __if I buy__ my desired tile for this amount, I will win the game, and __if I am outbid__ for this or some other tile, I _still_ win the game (i.e. the opponent spent too much by outbidding me)."
 
-It uses binary search on the bid value, and is very similar to minimax. I actually implemented it, but found that (at least with my code) it was too computationally expensive; I had to explore the future state tree too far to get a useable answer. So I scrapped it and went back to hacking more effective gamestate conditionals in to my bid calculation :)
+It uses binary search on the bid value, and is very similar to minimax. I actually implemented it, but found that (at least with my code) it was too computationally expensive; I had to explore the future state tree too far to get a usable answer. So I scrapped it and went back to hacking more effective gamestate conditionals in to my bid calculation :)
 
 Note: I’ve ignored bid ties and other minutia for simplicity of the pseudo code.
 ```javascript
