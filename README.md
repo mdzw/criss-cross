@@ -86,3 +86,9 @@ function determineBid(gamestate, mygold, opgold) {
   }
 }
 ```
+
+Appendix B: Path-Based Improvement
+----------------------------------
+My Shortest Path-Based tile scoring is pretty good, but there are a few situations where some additional metrics would be helpful. One example I identified too late to fix: Let's say I only need one more tile to win, but there is only one tile that could do the job (either it's a double-diagonal, or the opponent has blocked all other options). Sometimes it's worthwhile to buy some other tile that gives us more options. Specifically (I'm human, and we're currently bidding on A):  
+![](http://i.imgur.com/qGAkTkc.png)  
+In this case, my evaluator sees that only the G tile will help my _shortest_ path. Because neither 'A' helps _my_ shortest path, it would choose to bid on the yellow A, because it would help the opponent. However, the green A would give me 3 additional end-game options that the opponent would have to spend a lot of gold to prevent. Maybe I'll code this up to see how it does :)
