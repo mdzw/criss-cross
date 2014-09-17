@@ -37,7 +37,20 @@ Bid Calculation
 ---------------
 This is pretty ad hoc and dirty, with a lot of conditionals based on specific game states. Some highlights:
 
-* To Be Populated once the competition is over :)
+* Keep track of the tie results, so we know if we’ll win a tie (save 1 gold every so often :)
+* Never bid more than opponent's remaining gold + tiebreaker
+* If there's a tile that would win you the game, bid everything on it
+* If there's a tile that would give your opponent the win, make sure you bid on *something* with opGold + tiebreaker (It doesn't have to be that endgame tile, just something to prevent them from winning the bid that turn)
+  * This one can be tricky -- if we have detected that the opponent doesn't bid everything on the endgame, we can try to save some money while still preventing the loss.
+* If I’m low on gold or the opponent is out of gold, don’t use the opponent’s perspective (step 4 of Tile Scoring) to make bidding decisions. Basically, save gold for tiles I actually need
+* If we don’t think the opponent is interested in any tile that’s up for bidding, lower the bid
+* If the opponent always bids some certain value, and that value is something low, then just outbid them
+* Always try to leave enough gold to spend 1 on each remaining needed tile – this doesn’t seem to help (if we’re that low on gold, op will probably outbid us all day), but it’s a last ditch effort
+* To adapt to what my opponents’ various bid strategies might be, I track what the op bids in various situations. I then try to mimic or outbid them when similar situations arise in the future. This bid tracking persists across rounds, so if I lose in round 0, I come better prepared in round 1.
+
+Here is a strategy that I added on the last day, and it turned out to be pretty important against other top players:
+* If the opponent is _two_ tiles away from a finished path, try pretty hard to outbid them. This is important because if they become _one_ tile away from a finished path, to stay alive you have to outbid all of their remaining gold every time a winning tile comes up. This exhausts funds pretty quickly. The specifics of “try pretty hard” are left as an exercise to the reader, but it’s based on how much gold I have left, how many tiles I need to buy, and how much gold my opponent has left.
+
 
 Appendix A: Binary Search Bid Calculation
 -----------------------------------------
