@@ -12,6 +12,10 @@ Although my early time at the top was satisfying, watching the matches that I lo
 
 For the remainder of the tournament, I checked up on who beat me and how, and I would tweak something to improve the overall robustness. I would say that everyone in the top 20 on both ladders had a hand in shaping my final solution, so I offer my sincerest thanks to all of my competitors. Overall, this experience has been extremely stimulating and a lot of fun. I would definitely do it again, but maybe not for the next month or two.. My wife and I have been caring for a newborn this whole time, and I think I prefer to only have one reason to be up at 3am for a while :)
 
+CodeCombat Responsiveness
+-------------------------
+I want to emphasize that every time I had a question about anything, be it details of the game, the tournament, or bugs, everyone from CodeCombat was quick to respond and help me in any way they could. This made the entire process quite enjoyable, and is most certainly the reason I will be returning for future competitions. Thanks, CodeCombat!
+
 API Protection
 --------------
 When my code basically threw everything away and started fresh on every turn, I had almost no trouble with the API Protection. However, when I eventually wanted to record bid behavior across turns and rounds, it was a bit of a hassle. I did a lot of array wrangling thusly:  
