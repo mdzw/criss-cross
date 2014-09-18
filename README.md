@@ -1,6 +1,41 @@
+My Criss-Cross Tournament Experience
+====================================
+I remember taking a look at CodeCombat when they first launched. It was pretty fun, but at the time it was focused on learning to program; there wasn't really anything very challenging. A few months later, I put in a middling attempt at Greed, but never made it much more intelligent than "find the closest coinage and go there." When the Criss-Cross tournament was announced, I knew it was right up my alley: I have fond memories of hacking away at (and winning) [Kurt Eiselt's Oska competition](http://www.cs.ubc.ca/~eiselt/cs322/lectures/project.html) in my very first CS class at Georgia Tech (Go Jackets!) in the fall of 2002.  
+
+I actually began the Criss-Cross competition with a less refined version of my "Quick and Dirty" evaluator described below. For one, I hadn't organized my thoughts about what a Path Based solution would look like. But also I wasn't sure if I could actually do the graph theory stuff, given the execution limit, my limited recent experience with JavaScript, and the API protection (more on that later).
+
+So I wrote up a first draft that bid on tiles close to the center of the board, lying within in the "cone of reachability" of my previously-purchased tiles. If you can't imagine what that cone is, take a look at the example image down in the Tile Scoring section. You could also call it a "bow-tie of reachability" :). Then I added some smarts to prefer the center of the cone (fewer diagonal steps means fewer opportunities for the opponent to block me with one tile). This strategy got me pretty far up the ladder, and I was hooked.
+
+When I buckled down and wrote the path-based solution, I feel like I may have been the first to that particular wateringhole. I shot up to first place, and I hadn't done much of anything intelligent with the bidding. I thought that maybe good tile selection was enough, and that bidding was a minor concern. A few days later, that proved to be terribly, terribly wrong.
+
+Although my early time at the top was satisfying, watching the matches that I lost inspired me to keep working. Every time I analyzed my agent's behavior or that of my opponents, I looked for a generalized, abstracted solution to what went wrong. My goals were to fix that specific match, improve the overall strength of my agent, and not have any regressions against other agents that I was already beating.
+
+For the remainder of the tournament, I checked up on who beat me and how, and I would tweak something to improve the overall robustness. I would say that everyone in the top 20 on both ladders had a hand in shaping my final solution, so I offer my sincerest thanks to all of my competitors. Overall, this experience has been extremely stimulating and a lot of fun. I would definitely do it again, but maybe not for the next month or two.. My wife and I have been caring for a newborn this whole time, and I think I prefer to only have one reason to be up at 3am for a while :)
+
+API Protection
+--------------
+When my code basically threw everything away and started fresh on every turn, I had almost no trouble with the API Protection. However, when I eventually wanted to record bid behavior across turns and rounds, it was a bit of a hassle. I did a lot of array wrangling thusly:  
+
+If I had an object:
+```javascript
+this.xyz = {someNumber: 8, someOtherNumber: 9};
+```
+I couldn't directly update either value; API Protection told me it was read-only. However, if I had this object:
+```javascript
+this.xyz = {someNumber: [8], someOtherNumber: [9]};
+```
+Then to update a value I could do ```this.xyz.someNumber.unshift(11)```. Then just always refer to ```this.xyz.someNumber[0]``` when I want the latest value. A bit annoying, but at least I got something working :)
+Another method I used was to completely re-build a new object, referencing the values of the previous object or the updated values, and then over-writing ```this.xyz``` with the new object.
+
+I know that these API protection issues affected other hackers, and it's a shame that some of them dropped out as a result. I know Nick and the CodeCombat team squashed more than a few protection bugs during the tourney, so thanks for all your hard work.
+
 Criss-Cross Strategy
 ====================
-I broke the problem down into two sub problems: what to bid _on_, and what to bid.
+I broke the problem down into two sub problems: what to bid _on_, and what to bid. When I began, I had much clearer ideas on the first problem than the second, so my bid strategy was "18 all day" until that was no longer good enough.
+
+Step One: Identical code for Human and Ogre
+-------------------------------------------
+Because the game is symmetrical, I knew I could compete on both ladders with the same code if I just wrote an abstraction of rows vs columns. So that's what I did, and I switched on the value of this.team. Once that was complete, I had instantly doubled the number of opponents I could play against. Since watching games develop was a huge part of my refinement process, this was a big help.
 
 Tile Scoring: Path-Based
 ------------------------
@@ -24,7 +59,7 @@ if((myTiles < 2 && opponentTiles < 4) ||
    (myTiles < 5 && opponentTiles < 3))
 ```
 QnD values tiles that:
-* Make progress toward a finished path (anything in the gray boxes in the example below)
+* Make progress toward a finished path (anything in the gray boxes in the example below. AKA the bow-tie of reachability)
 * Are not currently in the “shadow” of an opponent’s blocking tiles (e.g. next to 3 in a column)
 * Are adjacent to one or two of my tiles
 * Are close to being in line (horizontally for humans) with my tiles
@@ -35,7 +70,14 @@ With these attributes combined, QnD quickly/cheaply picks tiles very similar to 
 
 Bid Calculation
 ---------------
-This is pretty ad hoc and dirty, with a lot of conditionals based on specific game states. Some highlights:
+This is pretty ad hoc and dirty, with a lot of conditionals based on specific game states. I think I had two powerful advantages:
+ 1. Identifying the game states that were different or important in some way, and figuring out what to do in those situations
+ 2. Recording my opponent's bidding behavior (split into buckets based on the above game states), and using that to predict what they will do when a similar game state arises in the future (across multiple rounds). This let me automatically adapt my bids to many strategies, without explicitly identifying those stratigies:
+    * I would save gold buying cheap tiles against opponents who bid super low early on
+    * I would trade tile purchases against opponents who bid middle values
+    * I would wait for opponents who bid way too high to exhaust their funds, and then clean up for cheap later (while easily outbidding them on to prevent any winning tile purchases)
+
+Some other bidding intelligence highlights:
 
 * Keep track of the tie results, so we know if we’ll win a tie (save 1 gold every so often :)
 * Never bid more than opponent's remaining gold + tiebreaker
@@ -43,10 +85,9 @@ This is pretty ad hoc and dirty, with a lot of conditionals based on specific ga
 * If there's a tile that would give your opponent the win, make sure you bid on *something* with opGold + tiebreaker (It doesn't have to be that endgame tile, just something to prevent them from winning the bid that turn)
   * This one can be tricky -- if we have detected that the opponent doesn't bid everything on the endgame, we can try to save some money while still preventing the loss.
 * If I’m low on gold or the opponent is out of gold, don’t use the opponent’s perspective (step 4 of Tile Scoring) to make bidding decisions. Basically, save gold for tiles I actually need
-* If we don’t think the opponent is interested in any tile that’s up for bidding, lower the bid
+* If we don’t think the opponent is interested in any tile that’s up for bidding, lower the bid (opponent's interest is based on the Path-Based tile scoring from their perspective)
 * If the opponent always bids some certain value, and that value is something low, then just outbid them
 * Always try to leave enough gold to spend 1 on each remaining needed tile – this doesn’t seem to help (if we’re that low on gold, op will probably outbid us all day), but it’s a last ditch effort
-* To adapt to what my opponents’ various bid strategies might be, I track what the op bids in various situations. I then try to mimic or outbid them when similar situations arise in the future. This bid tracking persists across rounds, so if I lose in round 0, I come better prepared in round 1.
 
 Here is a strategy that I added on the last day, and it turned out to be pretty important against other top players:
 * If the opponent is _two_ tiles away from a finished path, try pretty hard to outbid them. This is important because if they become _one_ tile away from a finished path, to stay alive you have to outbid all of their remaining gold every time a winning tile comes up. This exhausts funds pretty quickly. The specifics of “try pretty hard” are left as an exercise to the reader, but it’s based on how much gold I have left, how many tiles I need to buy, and how much gold my opponent has left.
