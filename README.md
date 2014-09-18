@@ -35,7 +35,7 @@ I broke the problem down into two sub problems: what to bid _on_, and what to bi
 
 Step One: Identical code for Human and Ogre
 -------------------------------------------
-Because the game is symmetrical, I knew I could compete on both ladders with the same code if I just wrote an abstraction of rows vs columns. So that's what I did, and I switched on the value of this.team. Once that was complete, I had instantly doubled the number of opponents I could play against. Since watching games develop was a huge part of my refinement process, this was a big help.
+Because the game is symmetrical, I knew I could compete on both ladders with the same code if I just wrote an abstraction of rows vs columns. So that's what I did, and I switched on the value of ```this.team```. Once that was complete, I had instantly doubled the number of opponents I could play against. Since watching games develop was a huge part of my refinement process, this was a big help.
 
 Tile Scoring: Path-Based
 ------------------------
@@ -75,7 +75,7 @@ This is pretty ad hoc and dirty, with a lot of conditionals based on specific ga
  2. Recording my opponent's bidding behavior (split into buckets based on the above game states), and using that to predict what they will do when a similar game state arises in the future (across multiple rounds). This let me automatically adapt my bids to many strategies, without explicitly identifying those stratigies:
     * I would save gold buying cheap tiles against opponents who bid super low early on
     * I would trade tile purchases against opponents who bid middle values
-    * I would wait for opponents who bid way too high to exhaust their funds, and then clean up for cheap later (while easily outbidding them on to prevent any winning tile purchases)
+    * I would wait for opponents who bid way too high to exhaust their funds, and then clean up for cheap later (while easily outbidding them to prevent any winning tile purchases)
 
 Some other bidding intelligence highlights:
 
@@ -89,7 +89,7 @@ Some other bidding intelligence highlights:
 * If the opponent always bids some certain value, and that value is something low, then just outbid them
 * Always try to leave enough gold to spend 1 on each remaining needed tile – this doesn’t seem to help (if we’re that low on gold, op will probably outbid us all day), but it’s a last ditch effort
 
-Here is a strategy that I added on the last day, and it turned out to be pretty important against other top players:
+Here is a strategy that I added on the last day, and it turned out to be pretty important against other top players (looking at you, HighSea):
 * If the opponent is _two_ tiles away from a finished path, try pretty hard to outbid them. This is important because if they become _one_ tile away from a finished path, to stay alive you have to outbid all of their remaining gold every time a winning tile comes up. This exhausts funds pretty quickly. The specifics of “try pretty hard” are left as an exercise to the reader, but it’s based on how much gold I have left, how many tiles I need to buy, and how much gold my opponent has left.
 
 
