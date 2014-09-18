@@ -40,10 +40,6 @@ var VERT = false;
 var myDir = this.team == "humans" ? HORIZ : VERT;
 var opDir = !myDir;
 
-var BFS_WAIT = 4;
-if(this.round == 2)
-    BFS_WAIT = 20;
-
 this.tgl = tileGroupLetter;
 this.tgli = "ABCDEFG".indexOf(tileGroupLetter);
 
